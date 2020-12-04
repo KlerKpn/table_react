@@ -4,6 +4,7 @@ import Table from './components/Table/Table'
 import Loader from './components/Loader/Loader'
 import RowData from './RowData/RowData'
 import ReactPaginate from 'react-paginate'
+import Search from './components/Search/Search'
 
 class App extends Component {
   state = {
@@ -11,7 +12,9 @@ class App extends Component {
     isLoading: true,
     rowData: null,
     sort: 'asc',
-    sortItem: 'id'
+    sortItem: 'id',
+    currentPage: 0,
+    seachValue: ''
   }
 
   async componentDidMount() {
@@ -53,33 +56,62 @@ class App extends Component {
     })
   }
 
-
-  handlePageClick = page =>{
-    console.log(page)
+  handleSearch = (value) => {
+    // let arrayCopy = [...this.state.data]
+    // let items =[]
+    // const arrayFilter = arrayCopy.filter(el => {
+    //   for(let i in el){
+    //     if(el[i].toString().toLowerCase().includes(value)){
+    //       return items.push(el)
+    //     } 
+    //   }     
+ 
+    //   return items
+    // })
   }
+
+  handlePageClick = ({ selected }) => {
+    this.setState({
+      currentPage: selected
+    })
+  }
+
+  chunk = (arr, chunkSize = 1, cache = []) => {
+    const tmp = [...arr]
+    if (chunkSize <= 0) return cache
+    while (tmp.length) cache.push(tmp.splice(0, chunkSize))
+    return cache
+  }
+
   render() {
+    const pageLimit = 50
+    const viewData = this.chunk(this.state.data, pageLimit)[this.state.currentPage]
+
     return (
       <>
         {
           this.state.isLoading
             ? <Loader />
-            : <Table
-              data={this.state.data}
-              row={this.setRowData}
-              sorted={this.handleSort}
-              sortItem={this.state.sortItem}
-              sortVal={this.state.sort}
-            />
+            : <>
+              <Search search={this.handleSearch} />
+              <Table
+                data={viewData}
+                row={this.setRowData}
+                sorted={this.handleSort}
+                sortItem={this.state.sortItem}
+                sortVal={this.state.sort}
+              />
+            </>
         }
 
         {
-          this.state.data.length > 50
+          this.state.data.length > pageLimit
             ? <ReactPaginate
               previousLabel={'<'}
               nextLabel={'>'}
               breakLabel={'...'}
               breakClassName={'break-me'}
-              pageCount={Math.ceil(this.state.data.length / 50)}
+              pageCount={Math.ceil(this.state.data.length / pageLimit)}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={this.handlePageClick}
@@ -91,6 +123,7 @@ class App extends Component {
               nextClassName='page-item'
               previousLinkClassName='page-link'
               nextLinkClassName='page-link'
+              forcePage={this.state.currentPage}
             />
             : null
         }
