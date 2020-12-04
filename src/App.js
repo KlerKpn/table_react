@@ -57,17 +57,28 @@ class App extends Component {
   }
 
   handleSearch = (value) => {
-    // let arrayCopy = [...this.state.data]
-    // let items =[]
-    // const arrayFilter = arrayCopy.filter(el => {
-    //   for(let i in el){
-    //     if(el[i].toString().toLowerCase().includes(value)){
-    //       return items.push(el)
-    //     } 
-    //   }     
+    this.setState({
+      seachValue: value,
+      currentPage: 0
+    })
+  }
+
+  getSearchData = () => {
+    const { data, seachValue } = this.state
+    if (!seachValue) return data
+    const filtered = []
+
+    data.forEach(el => {
+      for (let i in el) {
+        if (el[i].toString().toLowerCase().includes(seachValue)) {
+          filtered.push(el)
+        }
+      }
+    })
+
+
+      return filtered
  
-    //   return items
-    // })
   }
 
   handlePageClick = ({ selected }) => {
@@ -84,8 +95,9 @@ class App extends Component {
   }
 
   render() {
-    const pageLimit = 50
-    const viewData = this.chunk(this.state.data, pageLimit)[this.state.currentPage]
+    const pageLimit = 20
+    const searchData = this.getSearchData()
+    const viewData = this.chunk(searchData, pageLimit)[this.state.currentPage]
 
     return (
       <>
@@ -105,13 +117,13 @@ class App extends Component {
         }
 
         {
-          this.state.data.length > pageLimit
+          searchData.length > pageLimit
             ? <ReactPaginate
               previousLabel={'<'}
               nextLabel={'>'}
               breakLabel={'...'}
               breakClassName={'break-me'}
-              pageCount={Math.ceil(this.state.data.length / pageLimit)}
+              pageCount={Math.ceil(searchData.length / pageLimit)}
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={this.handlePageClick}
@@ -124,6 +136,7 @@ class App extends Component {
               previousLinkClassName='page-link'
               nextLinkClassName='page-link'
               forcePage={this.state.currentPage}
+              breakLinkClassName='page-link'
             />
             : null
         }
@@ -133,8 +146,6 @@ class App extends Component {
             ? <RowData data={this.state.rowData} />
             : null
         }
-
-
       </>
     )
   }

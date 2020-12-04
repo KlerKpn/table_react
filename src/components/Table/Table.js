@@ -13,18 +13,22 @@ const Table = props => {
                 </tr>
             </thead>
             <tbody>
-                {props.data.map(el => {
-                    const index = el.id + Math.random()
-                    return (
-                        <tr key={index} onClick={() => props.row(el)}>
-                            <td>{el.id}</td>
-                            <td>{el.firstName}</td>
-                            <td>{el.lastName}</td>
-                            <td>{el.email}</td>
-                            <td>{el.phone}</td>
-                        </tr>
-                    )
-                })}
+                {
+                    props.data !== undefined
+                        ? props.data.map(el => {
+                            const index = el.id + Math.random()
+                            return (
+                                <tr key={index} onClick={() => props.row(el)}>
+                                    <td>{el.id}</td>
+                                    <td>{el.firstName}</td>
+                                    <td>{el.lastName}</td>
+                                    <td>{el.email}</td>
+                                    <td>{el.phone}</td>
+                                </tr>
+                            )
+                        })
+                        : <tr><td><h5 style={{ color: 'red' }}>Нет похожих элементов</h5></td></tr>
+                }
             </tbody>
         </table>
     )
