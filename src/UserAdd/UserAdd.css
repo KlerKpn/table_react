@@ -1,0 +1,22 @@
+.UserAdd{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 200px;
+    width: 500px;
+    height: 250px;
+    padding: 15px;
+    background: rgb(241, 241, 241);
+}
+
+.wrapper{
+    top: 0;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    height: 100%;
+    z-index: 10;
+    background: rgba(125, 125, 202, 0.294);
+}

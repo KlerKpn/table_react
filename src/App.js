@@ -5,6 +5,7 @@ import Loader from './components/Loader/Loader'
 import RowData from './RowData/RowData'
 import ReactPaginate from 'react-paginate'
 import Search from './components/Search/Search'
+import UserAdd from './UserAdd/UserAdd';
 
 class App extends Component {
   state = {
@@ -14,11 +15,12 @@ class App extends Component {
     sort: 'asc',
     sortItem: 'id',
     currentPage: 0,
-    seachValue: ''
+    seachValue: '',
+    showModal: false
   }
 
   async componentDidMount() {
-    const data = await axios.get('http://www.filltext.com/?rows=322&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}')
+    const data = await axios.get('http://www.filltext.com/?rows=22&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}')
 
     this.setState({
       data: data.data,
@@ -70,15 +72,13 @@ class App extends Component {
 
     data.forEach(el => {
       for (let i in el) {
-        if (el[i].toString().toLowerCase().includes(seachValue)) {
+        if (el[i].toString().toLowerCase().includes(seachValue.toLowerCase())) {
           filtered.push(el)
         }
       }
     })
 
-
-      return filtered
- 
+    return filtered
   }
 
   handlePageClick = ({ selected }) => {
@@ -94,6 +94,15 @@ class App extends Component {
     return cache
   }
 
+  modalHandler = newUser => {
+    let data = [...this.state.data]
+    data.unshift(newUser)
+    this.setState({
+      data,
+      showModal: false
+    })
+  }
+
   render() {
     const pageLimit = 20
     const searchData = this.getSearchData()
@@ -106,6 +115,14 @@ class App extends Component {
             ? <Loader />
             : <>
               <Search search={this.handleSearch} />
+              {
+                this.state.showModal
+                  ? <UserAdd toggle={this.modalHandler} />
+                  : <button onClick={() => this.setState({ showModal: true })}>
+                    Add User
+                  </button>
+              }
+
               <Table
                 data={viewData}
                 row={this.setRowData}
