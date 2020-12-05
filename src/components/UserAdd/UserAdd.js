@@ -43,34 +43,53 @@ class UserAdd extends Component {
             <div className='wrapper'>
                 <div className='UserAdd'>
                     <div>
-                        id
+                        <div className='name'>
+                            id
+                        </div>
+
                         <input type='number' data-tag='id' value={this.state.data.id} onChange={event => this.handleChange(event.target.getAttribute('data-tag'), event.target.value)} />
                     </div>
                     <div>
-                        firstName
+                        <div className='name'>
+                            firstName
+                        </div>
                         <input type='text' value={this.state.data.firstName} data-tag='firstName' onChange={event => this.handleChange(event.target.getAttribute('data-tag'), event.target.value)} />
                     </div>
                     <div>
-                        lastName
+                        <div className='name'>
+                            lastName
+                        </div>
                         <input type='text' value={this.state.data.lastName} data-tag='lastName' onChange={event => this.handleChange(event.target.getAttribute('data-tag'), event.target.value)} />
                     </div>
                     <div>
-                        email
+                        <div className='name'>
+                            email
+                        </div>
                         <input type='email' value={this.state.data.email} data-tag='email' onChange={event => this.handleChange(event.target.getAttribute('data-tag'), event.target.value)} />
                     </div>
                     <div>
-                        phone
+                        <div className='name'>
+                            phone
+                        </div>
                         <input data-tag='phone' type='phone' value={this.state.data.phone} onChange={event => this.handleChange(event.target.getAttribute('data-tag'), event.target.value)} />
                     </div>
-                    <button
-                        className='btn btn-primary'
-                        disabled={this.state.disabled}
-                        onClick={() => {this.props.toggle(this.state.data);  this.clearState()}}
-                    >
-                        Add new user
+                    <div style={{ paddingTop: '20px' }}>
+                        <button
+                            className='btn btn-danger'
+                            onClick={() => { this.props.close(); this.clearState() }}
+                        >
+                            Отмена
+                          </button>
+                        <button
+                            style={{ marginLeft: '20px' }}
+                            className='btn btn-primary'
+                            disabled={this.state.disabled}
+                            onClick={() => { this.props.toggle(this.state.data); this.clearState() }}
+                        >
+                            Добавить в таблицу
                      </button>
+                    </div>
                 </div>
-
             </div>
         )
     }

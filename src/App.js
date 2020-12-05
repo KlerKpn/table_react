@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import Table from './components/Table/Table'
 import Loader from './components/Loader/Loader'
-import RowData from './RowData/RowData'
+import RowData from './components/RowData/RowData'
 import ReactPaginate from 'react-paginate'
 import Search from './components/Search/Search'
-import UserAdd from './UserAdd/UserAdd';
+import UserAdd from './components/UserAdd/UserAdd';
+import { smallData, bigData } from './assets/url'
 
 class App extends Component {
   state = {
@@ -16,11 +17,17 @@ class App extends Component {
     sortItem: 'id',
     currentPage: 0,
     seachValue: '',
-    showModal: false
+    showModal: false,
+    toggleCheck: ''
   }
 
-  async componentDidMount() {
-    const data = await axios.get('http://www.filltext.com/?rows=22&id={number|1000}&firstName={firstName}&lastName={lastName}&email={email}&phone={phone|(xxx)xxx-xx-xx}&address={addressObject}&description={lorem|32}')
+  componentDidMount() {
+    this.getData(smallData)
+  }
+
+  getData = async url => {
+    this.setState({isLoading: true})
+    const data = await axios.get(url)
 
     this.setState({
       data: data.data,
@@ -28,7 +35,6 @@ class App extends Component {
     })
     this.handleSort('id')
   }
-
   setRowData = rowData => {
     this.setState({ rowData })
   }
@@ -50,6 +56,7 @@ class App extends Component {
   handleSort = async field => {
     const cloneData = [...this.state.data]
     const data = await cloneData.sort(this.compareBy(field, this.state.sort))
+    if(!data) throw new Error('Не получилось загрузить данные')
     const sort = this.state.sort === 'asc' ? 'desc' : 'asc'
     this.setState({
       sort,
@@ -109,18 +116,27 @@ class App extends Component {
     const viewData = this.chunk(searchData, pageLimit)[this.state.currentPage]
 
     return (
-      <>
+      <div style={{ padding: '0 50px' }}>
         {
           this.state.isLoading
             ? <Loader />
             : <>
-              <Search search={this.handleSearch} />
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Search search={this.handleSearch} />
+                <button className='btn btn-success' onClick={() => this.setState({ showModal: true })}>
+                  Add User
+                  </button>
+                <div>
+                  <button onClick={() => this.getData(smallData)}>Small data</button>
+                  <button onClick={() => this.getData(bigData)}>Bgi data</button>
+                </div>
+
+              </div>
+
               {
                 this.state.showModal
-                  ? <UserAdd toggle={this.modalHandler} />
-                  : <button onClick={() => this.setState({ showModal: true })}>
-                    Add User
-                  </button>
+                  ? <UserAdd toggle={this.modalHandler} close={() => this.setState({ showModal: false })} />
+                  : null
               }
 
               <Table
@@ -130,9 +146,7 @@ class App extends Component {
                 sortItem={this.state.sortItem}
                 sortVal={this.state.sort}
               />
-            </>
-        }
-
+  
         {
           searchData.length > pageLimit
             ? <ReactPaginate
@@ -163,7 +177,9 @@ class App extends Component {
             ? <RowData data={this.state.rowData} />
             : null
         }
-      </>
+        </>
+        }
+      </div>
     )
   }
 }
