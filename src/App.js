@@ -18,7 +18,11 @@ class App extends Component {
     currentPage: 0,
     seachValue: '',
     showModal: false,
-    toggleCheck: ''
+    toggleCheck: {
+      small: true,
+      big: false,
+    }
+
   }
 
   componentDidMount() {
@@ -26,7 +30,7 @@ class App extends Component {
   }
 
   getData = async url => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     const data = await axios.get(url)
 
     this.setState({
@@ -56,7 +60,7 @@ class App extends Component {
   handleSort = async field => {
     const cloneData = [...this.state.data]
     const data = await cloneData.sort(this.compareBy(field, this.state.sort))
-    if(!data) throw new Error('Не получилось загрузить данные')
+    if (!data) throw new Error('Не получилось загрузить данные')
     const sort = this.state.sort === 'asc' ? 'desc' : 'asc'
     this.setState({
       sort,
@@ -110,6 +114,13 @@ class App extends Component {
     })
   }
 
+  toggle = () => {
+    const arrCopy = { ...this.state.toggleCheck }
+    arrCopy.small = !this.state.toggleCheck.small
+    arrCopy.big = !this.state.toggleCheck.big
+    this.setState({ toggleCheck: arrCopy })
+  }
+
   render() {
     const pageLimit = 20
     const searchData = this.getSearchData()
@@ -127,8 +138,8 @@ class App extends Component {
                   Add User
                   </button>
                 <div>
-                  <button onClick={() => this.getData(smallData)}>Small data</button>
-                  <button onClick={() => this.getData(bigData)}>Bgi data</button>
+                  <button disabled={this.state.toggleCheck.small} onClick={() => { this.getData(smallData); this.toggle() }}>Small data</button>
+                  <button disabled={this.state.toggleCheck.big} onClick={() => { this.getData(bigData); this.toggle() }}>Big data</button>
                 </div>
 
               </div>
@@ -146,38 +157,38 @@ class App extends Component {
                 sortItem={this.state.sortItem}
                 sortVal={this.state.sort}
               />
-  
-        {
-          searchData.length > pageLimit
-            ? <ReactPaginate
-              previousLabel={'<'}
-              nextLabel={'>'}
-              breakLabel={'...'}
-              breakClassName={'break-me'}
-              pageCount={Math.ceil(searchData.length / pageLimit)}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              onPageChange={this.handlePageClick}
-              containerClassName={'pagination'}
-              activeClassName={'active'}
-              pageClassName='page-item'
-              pageLinkClassName='page-link'
-              previousClassName='page-item'
-              nextClassName='page-item'
-              previousLinkClassName='page-link'
-              nextLinkClassName='page-link'
-              forcePage={this.state.currentPage}
-              breakLinkClassName='page-link'
-            />
-            : null
-        }
 
-        {
-          this.state.rowData
-            ? <RowData data={this.state.rowData} />
-            : null
-        }
-        </>
+              {
+                searchData.length > pageLimit
+                  ? <ReactPaginate
+                    previousLabel={'<'}
+                    nextLabel={'>'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={Math.ceil(searchData.length / pageLimit)}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={this.handlePageClick}
+                    containerClassName={'pagination'}
+                    activeClassName={'active'}
+                    pageClassName='page-item'
+                    pageLinkClassName='page-link'
+                    previousClassName='page-item'
+                    nextClassName='page-item'
+                    previousLinkClassName='page-link'
+                    nextLinkClassName='page-link'
+                    forcePage={this.state.currentPage}
+                    breakLinkClassName='page-link'
+                  />
+                  : null
+              }
+
+              {
+                this.state.rowData
+                  ? <RowData data={this.state.rowData} />
+                  : null
+              }
+            </>
         }
       </div>
     )
