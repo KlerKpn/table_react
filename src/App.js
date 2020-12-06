@@ -39,6 +39,7 @@ class App extends Component {
     })
     this.handleSort('id')
   }
+  
   setRowData = rowData => {
     this.setState({ rowData })
   }

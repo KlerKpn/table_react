@@ -3,9 +3,9 @@ import React from 'react'
 const Table = props => {
     function arrSort(sortVal) {
         if (sortVal === 'desc') {
-            return (<i class="fas fa-sort-down" />)
+            return (<i className="fas fa-sort-down" />)
         } else {
-            return (<i class="fas fa-sort-up" />)
+            return (<i className="fas fa-sort-up" />)
         }
     }
     return (
