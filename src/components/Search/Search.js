@@ -10,14 +10,12 @@ class Search extends Component {
         this.setState({
             value: event.target.value
         })
+        this.props.search(this.state.value)
     }
 
     render() {
         return (
             <div>
-                <button onClick={() => this.props.search(this.state.value)}>
-                    Search
-                </button>
                 <input value={this.state.value} onChange={event => this.onChangeHandler(event)} />
             </div>
         )
