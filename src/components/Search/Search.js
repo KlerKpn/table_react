@@ -1,25 +1,21 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 
-class Search extends Component {
+const Search = props => {
+    const [value, setValue] = useState('')
 
-    state = {
-        value: ''
+    function onChangeHandler(event) {
+        setValue(event.target.value)
     }
 
-    onChangeHandler = (event) => {
-        this.setState({
-            value: event.target.value
-        })
-        this.props.search(this.state.value)
-    }
+    useEffect(() => {
+        props.search(value)
+    }, [value])
 
-    render() {
-        return (
-            <div>
-                <input value={this.state.value} onChange={event => this.onChangeHandler(event)} />
-            </div>
-        )
-    }
+    return (
+        <div>
+            <input value={value} onChange={event => onChangeHandler(event)} />
+        </div>
+    )
 }
 
 export default Search
